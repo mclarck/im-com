@@ -1,0 +1,8 @@
+{
+    "from": "kioskito",
+    "to": "all",
+    "userId": "23",
+    "apikey": "asdfqweqwxsxasda",
+    "action": "new:visitor",
+    "payload": "any string data"
+}

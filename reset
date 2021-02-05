@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sudo rm -rf node_modules/* *lock*
+yarn install  
