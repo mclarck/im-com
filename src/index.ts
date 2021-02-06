@@ -6,7 +6,7 @@ import { reduce } from "./reducer";
 
 const app = express();
 
-app.set("port", process.env.PORT || 5000);
+app.set("port", process.env.PORT || 8080);
 
 let http = require("http").Server(app);
 let io = require("socket.io")(http);
@@ -88,6 +88,6 @@ scope.use((socket: any, next: any) => {
   next();
 });
 
-http.listen(5000, () => {
-  Log("listening on *:5000");
+http.listen(8080, () => {
+  Log("listening on *:8080");
 });
