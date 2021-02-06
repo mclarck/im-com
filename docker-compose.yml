@@ -1,8 +1,8 @@
 version: "3.7"
 
 services:
-  im-com:
-    container_name: im-com
+  io:
+    container_name: io
     build:
       context: .
       dockerfile: Dockerfile
