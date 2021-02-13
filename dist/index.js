@@ -1,16 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = require("express");
-const path = require("path");
 const log_1 = require("./lib/log");
 const reducer_1 = require("./reducer");
-const app = express();
-app.set("port", process.env.PORT || 5000);
-let http = require("http").Server(app);
-let io = require("socket.io")(http);
-app.get("/", (req, res) => {
-    res.sendFile(path.resolve("./public/index.html"));
-});
+const https = require('https');
+const fs = require('fs');
+const options = {
+    key: fs.readFileSync('cert/key.pem'),
+    cert: fs.readFileSync('cert/cert.pem')
+};
+const server = https.createServer(options, function (req, res) { });
+const io = require("socket.io")(server);
 const clients = {};
 const scope = io.of(new RegExp(`^\/\.+$`).compile());
 scope.on("connection", (socket) => {
@@ -88,7 +87,5 @@ scope.on("connection", (socket) => {
 scope.use((socket, next) => {
     next();
 });
-http.listen(5000, () => {
-    log_1.default("listening on *:5000");
-});
+server.listen(8080);
 //# sourceMappingURL=index.js.map

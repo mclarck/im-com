@@ -1,25 +1,17 @@
-import * as express from "express";
-import * as socketio from "socket.io";
-import * as path from "path";
+import * as SocketIO from "socket.io";
 import Log from "./lib/log";
 import { reduce } from "./reducer";
-
-const app = express();
-
-app.set("port", process.env.PORT || 8080);
-
-let http = require("http").Server(app);
-let io = require("socket.io")(http);
-
-app.get("/", (req: any, res: any) => {
-  res.sendFile(path.resolve("./public/index.html"));
-});
-
+const https = require('https');
+const fs = require('fs');
+const options = {
+  key: fs.readFileSync('cert/key.pem'),
+  cert: fs.readFileSync('cert/cert.pem')
+};
+const server = https.createServer(options, function (req:any, res:any) {});
+const io = require("socket.io")(server);
 const clients: any = {};
-
 const scope = io.of(new RegExp(`^\/\.+$`).compile());
-
-scope.on("connection", (socket: socketio.Socket) => {
+scope.on("connection", (socket: SocketIO.Socket) => {
   const namespace = socket.nsp;
   try {
     reduce(socket, namespace, "connection", null, clients);
@@ -83,11 +75,7 @@ scope.on("connection", (socket: socketio.Socket) => {
     }
   });
 });
-
 scope.use((socket: any, next: any) => {
   next();
 });
-
-http.listen(8080, () => {
-  Log("listening on *:8080");
-});
+server.listen(8080);
