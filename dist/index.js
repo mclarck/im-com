@@ -5,8 +5,8 @@ const reducer_1 = require("./reducer");
 const https = require('https');
 const fs = require('fs');
 const options = {
-    key: fs.readFileSync('cert/key.pem'),
-    cert: fs.readFileSync('cert/cert.pem')
+    key: fs.readFileSync('.conf/key.pem'),
+    cert: fs.readFileSync('.conf/cert.pem')
 };
 const server = https.createServer(options, function (req, res) { });
 const io = require("socket.io")(server);
