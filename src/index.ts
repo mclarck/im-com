@@ -1,14 +1,11 @@
 import * as SocketIO from "socket.io";
 import Log from "./lib/log";
 import { reduce } from "./reducer";
-const https = require('https');
+const http = require('http');
 const fs = require('fs');
-const options = {
-  key: fs.readFileSync('.conf/key.pem'),
-  cert: fs.readFileSync('.conf/cert.pem')
-};
-const server = https.createServer(options, function (req:any, res:any) {});
-const io = require("socket.io")(server);
+const options = { key: fs.readFileSync('.conf/key.pem'), cert: fs.readFileSync('.conf/cert.pem') };
+const server = http.createServer();
+const io = require("socket.io")(server, { cors: { origin: '*' }, transports: ['polling'] });
 const clients: any = {};
 const scope = io.of(new RegExp(`^\/\.+$`).compile());
 scope.on("connection", (socket: SocketIO.Socket) => {
