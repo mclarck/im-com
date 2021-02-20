@@ -1,11 +1,17 @@
 import * as SocketIO from "socket.io";
+import * as express from "express";
+import * as path from "path";
 import Log from "./lib/log";
 import { reduce } from "./reducer";
+const app = express();
 const http = require('http');
 const fs = require('fs');
 const options = { key: fs.readFileSync('.conf/key.pem'), cert: fs.readFileSync('.conf/cert.pem') };
-const server = http.createServer();
+const server = http.Server(app);
 const io = require("socket.io")(server, { cors: { origin: '*' }, transports: ['polling'] });
+app.get("/", (req: any, res: any) => {
+  res.sendFile(path.resolve("./public/index.html"));
+});
 const clients: any = {};
 const scope = io.of(new RegExp(`^\/\.+$`).compile());
 scope.on("connection", (socket: SocketIO.Socket) => {

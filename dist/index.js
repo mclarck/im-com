@@ -1,15 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const express = require("express");
+const path = require("path");
 const log_1 = require("./lib/log");
 const reducer_1 = require("./reducer");
-const https = require('https');
+const app = express();
+const http = require('http');
 const fs = require('fs');
-const options = {
-    key: fs.readFileSync('.conf/key.pem'),
-    cert: fs.readFileSync('.conf/cert.pem')
-};
-const server = https.createServer(options, function (req, res) { });
-const io = require("socket.io")(server);
+const options = { key: fs.readFileSync('.conf/key.pem'), cert: fs.readFileSync('.conf/cert.pem') };
+const server = http.Server(app);
+const io = require("socket.io")(server, { cors: { origin: '*' }, transports: ['polling'] });
+app.get("/", (req, res) => {
+    res.sendFile(path.resolve("./public/index.html"));
+});
 const clients = {};
 const scope = io.of(new RegExp(`^\/\.+$`).compile());
 scope.on("connection", (socket) => {
